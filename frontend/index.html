@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Análise da Câmara</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --color1: #caf729;
+            --color2: #79dd7e;
+            --color3: #2ecbaa;
+            --color4: #21b6b6;
+            --color5: #888dda;
+            --dark-bg: #1e1e2f;
+            --light-bg: #28283d;
+            --text-primary: #f0f0f0;
+            --text-secondary: #c0c0d0;
+            --border-color: #40405a;
+        }
+
+        body {
+            padding: 2rem;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 70vh;
+            width: 100%;
+            background-color: var(--light-bg);
+            padding: 1.5rem 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+        }
+
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            border: none;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            border-bottom-color: var(--border-color);
+        }
+
+        .nav-link.active {
+            background-color: transparent !important;
+            color: var(--text-primary) !important;
+            font-weight: 600;
+        }
+
+        #partidos-despesa-tab.active {
+            color: var(--color1) !important;
+            border-bottom-color: var(--color1);
+        }
+
+        #deputados-despesa-tab.active {
+            color: var(--color2) !important;
+            border-bottom-color: var(--color2);
+        }
+
+        #proposicoes-votadas-tab.active {
+            color: var(--color3) !important;
+            border-bottom-color: var(--color3);
+        }
+
+        #comparativo-estados-tab.active {
+            color: var(--color4) !important;
+            border-bottom-color: var(--color4);
+        }
+
+        #alinhamento-partidario-tab.active {
+            color: var(--color5) !important;
+            border-bottom-color: var(--color5);
+        }
+
+        .display-5 {
+            font-weight: 600;
+        }
+
+        .lead {
+            color: var(--text-secondary);
+        }
+        .chart-description {
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem; 
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem; 
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .chart-description strong {
+            color: var(--text-primary);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-5">Dashboard de Análise Parlamentar</h1>
+            <p class="lead">Visualização de dados da Câmara dos Deputados.</p>
+        </div>
+
+        <ul class="nav nav-tabs" id="dashboardTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="partidos-despesa-tab" data-bs-toggle="tab" data-bs-target="#partidos-despesa" type="button" role="tab">Gastos por Partido</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="deputados-despesa-tab" data-bs-toggle="tab" data-bs-target="#deputados-despesa" type="button" role="tab">Top 15 Deputados por Gasto</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="proposicoes-votadas-tab" data-bs-toggle="tab" data-bs-target="#proposicoes-votadas" type="button" role="tab">Proposições Mais Votadas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="comparativo-estados-tab" data-bs-toggle="tab" data-bs-target="#comparativo-estados" type="button" role="tab">Gastos por Estado</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="alinhamento-partidario-tab" data-bs-toggle="tab" data-bs-target="#alinhamento-partidario" type="button" role="tab">Alinhamento Partidário</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="dashboardTabContent">
+            
+            <div class="tab-pane fade show active" id="partidos-despesa" role="tabpanel">
+                <div class="chart-description">
+                    <strong>Sobre este Gráfico: Gastos por Partido</strong>
+                    Este gráfico de barras horizontais exibe o montante total de despesas da cota parlamentar gasto por cada partido no ano selecionado.
+                </div>
+                <div class="chart-container"><canvas id="chartPartidosDespesa"></canvas></div>
+            </div>
+
+            <div class="tab-pane fade" id="deputados-despesa" role="tabpanel">
+                <div class="chart-description">
+                    <strong>Sobre este Gráfico: Top 15 Deputados por Gasto</strong>
+                    Esta visualização mostra os 15 deputados que mais registraram despesas na cota parlamentar, indicando o valor total gasto por cada um.
+                </div>
+                <div class="chart-container"><canvas id="chartDeputadosDespesa"></canvas></div>
+            </div>
+
+            <div class="tab-pane fade" id="proposicoes-votadas" role="tabpanel">
+                <div class="chart-description">
+                    <strong>Sobre este Gráfico: Proposições Mais Votadas</strong>
+                    Aqui são listadas as proposições (como PECs, PLs, etc.) que tiveram o maior número de votações (eventos de votação) no plenário durante o ano.
+                </div>
+                <div class="chart-container"><canvas id="chartProposicoesVotadas"></canvas></div>
+            </div>
+
+            <div class="tab-pane fade" id="comparativo-estados" role="tabpanel">
+                <div class="chart-description">
+                    <strong>Sobre este Gráfico: Gastos por Estado</strong>
+                    Este gráfico de barras compara o gasto total somado de todos os deputados de cada estado (UF), permitindo ver quais bancadas estaduais mais utilizaram a cota.
+                </div>
+                <div class="chart-container"><canvas id="chartComparativoEstados"></canvas></div>
+            </div>
+
+            <div class="tab-pane fade" id="alinhamento-partidario" role="tabpanel">
+                <div class="chart-description">
+                    <strong>Sobre este Gráfico: Alinhamento Partidário</strong>
+                    Ranqueia os partidos pelo seu percentual de alinhamento com o resultado
+                    final das votações (votar 'Sim' em pautas aprovadas ou 'Não' em reprovadas).
+                </div>
+                <div class="chart-container"><canvas id="chartAlinhamentoPartidario"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const rootStyles = getComputedStyle(document.documentElement);
+        Chart.defaults.color = rootStyles.getPropertyValue('--text-secondary'); 
+        Chart.defaults.borderColor = rootStyles.getPropertyValue('--border-color');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const anoEscolhido = urlParams.get('year');
+        const portaApi = urlParams.get('port');
+
+        if (!anoEscolhido) {
+            document.body.innerHTML = '<div class="container text-center mt-5"><div class="alert alert-danger"><h1>Erro: Ano não especificado.</h1><p class="lead">Por favor, inicie a análise através do aplicativo principal para selecionar um ano.</p></div></div>';
+            throw new Error("Ano não especificado na URL, interrompendo a execução.");
+        }
+        
+        document.querySelector('h1.display-5').textContent += ` - Ano: ${anoEscolhido}`;
+
+        const API_BASE_URL = `http://127.0.0.1:${portaApi}`;
+        
+        let activeCharts = {}; 
+
+        function renderChart(canvasId, chartConfig) {
+            if (activeCharts[canvasId]) {
+                activeCharts[canvasId].destroy();
+            }
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            if (!chartConfig.options) chartConfig.options = {};
+            chartConfig.options.responsive = true;
+            chartConfig.options.maintainAspectRatio = false;
+
+            if (!chartConfig.options.plugins) chartConfig.options.plugins = {};
+            if (!chartConfig.options.plugins.tooltip) chartConfig.options.plugins.tooltip = {};
+            chartConfig.options.plugins.tooltip.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            chartConfig.options.plugins.tooltip.titleColor = 'rgba(255, 255, 255, 1)';
+            chartConfig.options.plugins.tooltip.bodyColor = 'rgba(255, 255, 255, 0.9)';
+
+            activeCharts[canvasId] = new Chart(ctx, chartConfig);
+        }
+        
+        function formatCurrency(value) {
+            return 'R$ ' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+        }
+
+        async function carregarRankingPartidos() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/partido/ranking/partidos_despesa?year=${anoEscolhido}`);
+                if (!response.ok) throw new Error('Erro na API');
+                const data = await response.json();
+                renderChart('chartPartidosDespesa', {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(p => p.sigla),
+                        datasets: [{ label: 'Gasto Total (R$)', data: data.map(p => p.total_despesas), backgroundColor: 'rgba(0, 123, 255, 0.7)' }]
+                    },
+                    options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: formatCurrency } } } }
+                });
+            } catch (error) { document.getElementById('chartPartidosDespesa').closest('.chart-container').innerHTML = '<div class="alert alert-danger">Falha ao carregar dados.</div>'; }
+        }
+
+        async function carregarRankingDeputados() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/deputado/ranking/deputados_despesa?page=1&per_page=15&year=${anoEscolhido}`);
+                if (!response.ok) throw new Error('Erro na API');
+                const rankingData = await response.json();
+                const data = rankingData.items;
+                renderChart('chartDeputadosDespesa', {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => `${d.nome_eleitoral} (${d.sigla_partido})`),
+                        datasets: [{ label: 'Gasto Total (R$)', data: data.map(d => d.total_despesas), backgroundColor: 'rgba(23, 162, 184, 0.7)' }]
+                    },
+                    options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: formatCurrency } } } }
+                });
+            } catch (error) { document.getElementById('chartDeputadosDespesa').closest('.chart-container').innerHTML = '<div class="alert alert-danger">Falha ao carregar dados.</div>'; }
+        }
+
+        async function carregarProposicoesMaisVotadas() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/proposicao/mais_votadas/15?year=${anoEscolhido}`);
+                if (!response.ok) throw new Error('Erro na API');
+                const data = await response.json();
+                renderChart('chartProposicoesVotadas', {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(p => `${p.sigla_tipo} ${p.ano}`),
+                        datasets: [{ label: 'Nº de Votações', data: data.map(p => p.total_votacoes), backgroundColor: 'rgba(40, 167, 69, 0.7)' }]
+                    },
+                    options: { indexAxis: 'y', plugins: { legend: { display: false } } }
+                });
+            } catch (error) { document.getElementById('chartProposicoesVotadas').closest('.chart-container').innerHTML = '<div class="alert alert-danger">Falha ao carregar dados.</div>'; }
+        }
+
+        async function carregarComparativoEstados() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/analise/comparativo_estados?year=${anoEscolhido}`);
+                if (!response.ok) throw new Error('Erro na API');
+                const data = await response.json();
+                renderChart('chartComparativoEstados', {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(e => e.uf),
+                        datasets: [{ label: 'Gasto Total (R$)', data: data.map(e => e.total_gasto), backgroundColor: 'rgba(255, 193, 7, 0.7)' }]
+                    },
+                    options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: formatCurrency } } } }
+                });
+            } catch (error) { document.getElementById('chartComparativoEstados').parentElement.innerHTML = '<div class="alert alert-danger">Falha ao carregar dados.</div>'; }
+        }
+        
+        async function carregarAlinhamentoPartidario() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/analise/ranking/alinhamento_resultado?year=${anoEscolhido}`);
+                if (!response.ok) throw new Error('Erro na API');
+                const data = await response.json();
+
+                renderChart('chartAlinhamentoPartidario', {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(p => p.sigla_partido),
+                        datasets: [{
+                            label: 'Percentual de Alinhamento (%)',
+                            data: data.map(p => p.percentual_alinhamento),
+                            backgroundColor: 'rgba(220, 53, 69, 0.7)'
+                        }]
+                    },
+                    options: { 
+                        indexAxis: 'y', 
+                        plugins: { legend: { display: false } },
+                        scales: { 
+                            x: { 
+                                ticks: { 
+                                    callback: function(value) { return value.toFixed(2) + '%'; }
+                                } 
+                            } 
+                        } 
+                    }
+                });
+            } catch (error) {
+                document.getElementById('chartAlinhamentoPartidario').parentElement.innerHTML = '<div class="alert alert-danger">Falha ao carregar dados.</div>';
+            }
+        }
+
+        const tabs = document.querySelectorAll('#dashboardTab button');
+        tabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', (event) => {
+                const targetId = event.target.getAttribute('data-bs-target');
+                switch (targetId) {
+                    case '#partidos-despesa': carregarRankingPartidos(); break;
+                    case '#deputados-despesa': carregarRankingDeputados(); break;
+                    case '#proposicoes-votadas': carregarProposicoesMaisVotadas(); break;
+                    case '#comparativo-estados': carregarComparativoEstados(); break;
+                    case '#alinhamento-partidario': carregarAlinhamentoPartidario(); break;
+                }
+            });
+        });
+
+        window.onload = carregarRankingPartidos;
+
+    </script>
+</body>
+</html>
