@@ -73,7 +73,10 @@ A API local (FastAPI) serve os dados do banco SQLite para o frontend.
 
 ## 🖼️ Galeria (Resultado Final)
 
-Após o processamento, um dashboard é aberto no navegador, apresentando os dados de forma interativa.
+Após o processamento pela GUI, um dashboard é aberto no navegador, apresentando os dados de forma interativa.
+
+> Esse dahsboard serve apenas como um exemplo de resultado final.
+> As consultas úteis seriam mais robustas e a interface seria mais flexível.
 
 #### ![alt text](imgs/gui.png)
 
@@ -118,8 +121,8 @@ Foram criados scripts automáticos para facilitar a instalação e execução.
 ### 1\. Clone o Repositório
 
 ```bash
-git clone https://github.com/Wexxxley/Ferramenta-para-extra-o-e-visualiza-o-de-dados-parlamentares.git
-cd Ferramenta-para-extra-o-e-visualiza-o-de-dados-parlamentares
+git clone https://github.com/Wexxxley/Ferramenta-para-extracao-e-visualizacao-de-dados-parlamentares.git
+cd Ferramenta-para-extracao-e-visualizacao-de-dados-parlamentares
 ```
 
 ### 2\. Execute o Script de Instalação
@@ -150,4 +153,5 @@ Os scripts irão criar um ambiente virtual (`venv`), instalar todas as dependên
 1.  Com o painel de controle (janela Tkinter) aberto, **selecione o ano** que deseja analisar.
 2.  Clique em **"Iniciar Processamento"**.
 3.  Acompanhe o progresso pela caixa de "Log de Atividades".
+
 4.  Ao final, a aplicação irá **iniciar o servidor da API** e **abrir a interface de visualização** automaticamente no seu navegador padrão.
