@@ -1,26 +1,96 @@
-# 🚀 Analisador Parlamentar
 
-Este projeto apresenta uma prova de conceito (POC) de uma arquitetura de software distribuída como um aplicativo executável, projetada para simplificar a coleta, tratamento, armazenamento e a análise de dados abertos da Câmara dos Deputados do Brasil.
+# 📊 FERRAMENTA INTEGRADA PARA EXTRAÇÃO E VISUALIZAÇÃO DE DADOS PARLAMENTARES
 
-Uma ferramenta para processar, analisar e visualizar dados de despesas da Câmara dos Deputados do Brasil.
+O portal da Câmara dos Deputados do Brasil oferece um volume massivo de informações sobre a atuação dos parlamentares. Contudo, a mera existência desses dados não garante a transparência. O "dilúvio de dados", sem as ferramentas adequadas para sua interpretação, pode ofuscar em vez de esclarecer.
+
+Visando endereçar especificamente a barreira da complexidade técnica, este projeto apresenta uma prova de conceito (POC). A principal contribuição é o encapsulamento de todo o ciclo de vida dos dados, desde a coleta até o armazenamento em um banco de dados local.
+
+Esta abordagem automatizada gera valor para dois públicos distintos:
+
+1.  **Para o cidadão comum:** Reduz a barreira de entrada ao oferecer visualizações pré-definidas.
+2.  **Para jornalistas e pesquisadores:** Simplifica a custosa etapa inicial de coleta e tratamento, entregando um banco de dados estruturado e pronto para ser consumido por ferramentas de análise mais robustas.
 
 Este é um projeto híbrido que utiliza uma interface desktop (criada com Tkinter) para orquestrar o processamento de dados e o lançamento de um backend de API (FastAPI). O backend, por sua vez, serve os dados processados para um frontend de visualização (HTML/JS) que é aberto no navegador.
 
-## ✨ Funcionalidades
+-----
+
+## 📌 Índice
+
+  * [Visão Geral e Funcionalidades](#-visão-geral-e-funcionalidades)
+  * [O Desafio Principal](#-o-desafio-principal)
+  * [Arquitetura e Estrutura de Dados](#-arquitetura-e-estrutura-de-dados)
+  * [Galeria (Resultado Final)](#-galeria-resultado-final)
+  * [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+  * [Pré-requisitos](#-pré-requisitos)
+  * [Como Executar o Projeto](#-como-executar-o-projeto)
+
+---
+
+## 🗺️ Visão Geral e Funcionalidades
+
+O ponto de partida é um painel de controle simples (GUI) que orquestra todo o processo de ETL e visualização.
+
+### Funcionalidades
 
   * **Painel de Controle Desktop:** Uma interface simples para selecionar o ano e iniciar o processamento.
-  * **Processamento de Dados:** Rotinas para baixar (se necessário), limpar e preparar os dados de despesas parlamentares.
+  * **Processamento de Dados (ETL):** Rotinas para baixar (se necessário), limpar, transformar e salvar os dados parlamentares.
   * **API Local:** Um servidor FastAPI é iniciado localmente em uma porta livre para servir os dados processados ao frontend.
   * **Visualização Web:** Uma interface web (frontend) que consome a API local e exibe os dados de forma interativa.
+
+-----
+
+## 🎯 O Desafio Principal
+
+O núcleo da ferramenta é o módulo de coleta de dados. O principal desafio enfrentado foi a **extrema heterogeneidade dos dados** fornecidos pela Câmara. O processo é iniciado sob demanda para um ano específico e atua como um processo de ETL (Extract, Transform, Load) forçado a lidar com:
+
+1.  **Formatos Múltiplos:** Os dados não estão em formato único. Dependendo do *endpoint*, as informações vêm em JSON, XML ou CSV.
+2.  **Lógicas de Extração Distintas:** A obtenção de um conjunto completo de dados raramente é uma única chamada de API. Frequentemente, é preciso primeiro fazer uma requisição-mãe (ex: votações) e, em seguida, acessar *links* internos dessa resposta (ex: os votos individuais) para obter os detalhes.
+3.  **Transformação e Unificação:** O módulo gasta esforço significativo limpando e padronizando esses dados de formatos e fontes distintas em um esquema único e coerente, antes de salvá-los no banco de dados.
+
+---
+
+## 🏗️ Arquitetura e Estrutura de Dados
+
+O projeto é dividido em três partes principais: o painel (`Tkinter`), uma API de backend (`FastAPI`) e um dashboard (`HTML/JS`).
+
+### 1\. Schema do Banco de Dados
+
+Após o ETL, os dados são salvos em um banco de dados SQLite local. 
+
+>No entanto, como uma POC, a solução possui limitações claras que definem os trabalhos futuros. 
+>A escolha do SQLite é um gargalo para a escalabilidade, sendo ideal sua substituição por um Data Warehouse em implementações futuras 
+>que visem analisar maiores volumes de dados.
+
+![alt text](imgs/schema.png)
+
+### 2\. Endpoints da API
+
+A API local (FastAPI) serve os dados do banco SQLite para o frontend.
+
+![alt text](imgs/endpoints.png)
+
+---
+
+## 🖼️ Galeria (Resultado Final)
+
+Após o processamento, um dashboard é aberto no navegador, apresentando os dados de forma interativa.
+
+#### ![alt text](imgs/gui.png)
+
+#### ![alt text](imgs/dashboardGE.png)
+
+#### ![alt text](imgs/dashboardGP.png)
+
+---
 
 ## 💻 Tecnologias Utilizadas
 
   * **Painel de Controle:** Python + Tkinter
-  * **Backend (API):** Python + FastAPI + Uvicorn
-  * **Processamento:** Python (com bibliotecas como `requests`, `sqlmodel`)
-  * **Frontend:** HTML, CSS, JavaScript
+  * **Backend (API):** Python + FastAPI
+  * **Frontend (Visualização):** HTML + CSS + JavaScript (Chart.js)
+  * **Banco de Dados:** SQLite
 
------
+---
 
 ## ⚙️ Pré-requisitos
 
@@ -39,11 +109,11 @@ Para sistemas baseados em Debian/Ubuntu (como o Linux Mint), rode:
 sudo apt install python3-tk
 ```
 
------
+---
 
-## 🏃 Como Executar o Projeto
+## 👨‍💻 Como Executar o Projeto
 
-Foi criado scripts automáticos para facilitar a instalação e execução.
+Foram criados scripts automáticos para facilitar a instalação e execução.
 
 ### 1\. Clone o Repositório
 

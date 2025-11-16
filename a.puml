@@ -1,0 +1,120 @@
+@startuml
+
+' --- FORÇA O LAYOUT COMPACTO (ESQUERDA-PARA-DIREITA) ---
+left to right direction
+
+' --- Configurações Visuais (Com Cores) ---
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam roundCorner 5
+skinparam Linetype ortho ' Linhas retas
+
+' Cores para as tabelas
+skinparam entity {
+    BackgroundColor #LightYellow
+    BorderColor #DarkGoldenRod
+    HeaderBackgroundColor #LightBlue
+}
+' Cores para as setas
+skinparam arrow {
+    Color #444
+    Thickness 1.5
+}
+
+' --- Definição das Entidades (Tabelas) ---
+
+entity partido {
+  + id : INTEGER {PK}
+  --
+  id_dados_abertos : INTEGER
+  sigla : VARCHAR(50) {UQ}
+  nome_completo : VARCHAR(255)
+  uri_logo : VARCHAR(500)
+  id_legislativo : INTEGER
+  situacao : VARCHAR(50)
+  total_membros : INTEGER
+  total_posse_legislatura : INTEGER
+}
+
+entity deputado {
+  + id : INTEGER {PK}
+  --
+  id_dados_abertos : INTEGER
+  nome_civil : VARCHAR(255)
+  nome_eleitoral : VARCHAR(255)
+  sigla_partido : VARCHAR(50)
+  sigla_uf : VARCHAR(2)
+  + id_partido : INTEGER {FK}
+  id_legislativo : INTEGER
+  url_foto : VARCHAR(500)
+  sexo : VARCHAR(1)
+}
+
+entity despesa {
+  + id : INTEGER {PK}
+  --
+  + id_deputado : INTEGER {FK}
+  ano : INTEGER
+  mes : INTEGER
+  tipo_despesa : VARCHAR(300)
+  valor_liquido : FLOAT
+  tipo_documento : VARCHAR(100)
+  url_documento : VARCHAR(500)
+  nome_fornecedor : VARCHAR(255)
+}
+
+entity proposicao {
+  + id : INTEGER {PK}
+  --
+  id_dados_abertos : VARCHAR
+  sigla_tipo : VARCHAR(10)
+  ano : INTEGER
+  ementa : TEXT
+  data_apresentacao : VARCHAR
+  status : TEXT
+  url_inteiro_teor : VARCHAR(1000)
+}
+
+entity sessaovotacao {
+  + id : INTEGER {PK}
+  --
+  id_dados_abertos : VARCHAR
+  data_hora_registro : VARCHAR
+  descricao : TEXT
+  sigla_orgao : VARCHAR(500)
+  aprovacao : VARCHAR(500)
+  descricao_ultima_abertura_votacao : TEXT
+  uri : VARCHAR(1000)
+}
+
+entity votacaoproposicao {
+  + id : INTEGER {PK}
+  --
+  + id_proposicao : INTEGER {FK}
+  + id_votacao : INTEGER {FK}
+}
+
+entity votoindividual {
+  + id : INTEGER {PK}
+  --
+  + id_votacao : INTEGER {FK}
+  + id_deputado : INTEGER {FK}
+  tipo_voto : VARCHAR(50)
+  data_hora_registro : VARCHAR
+  sigla_partido_deputado : VARCHAR(50)
+  uri_deputado : VARCHAR(500)
+  uri_sessao_votacao : VARCHAR(500)
+}
+
+
+' --- Definição dos Relacionamentos ---
+' (O layout L-R vai organizar isso de forma compacta)
+
+partido --> deputado : "possui (1-N)"
+deputado --> despesa : "realiza (1-N)"
+deputado --> votoindividual : "vota (1-N)"
+sessaovotacao --> votoindividual : "contém (1-N)"
+sessaovotacao --> votacaoproposicao : "é sobre (1-N)"
+proposicao --> votacaoproposicao : "é votada em (1-N)"
+
+@enduml
