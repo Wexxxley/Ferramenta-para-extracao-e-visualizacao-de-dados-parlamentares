@@ -12,7 +12,9 @@ Esta abordagem automatizada gera valor para dois públicos distintos:
 
 Este é um projeto híbrido que utiliza uma interface desktop (criada com Tkinter) para orquestrar o processamento de dados e o lançamento de um backend de API (FastAPI). O backend, por sua vez, serve os dados processados para um frontend de visualização (HTML/JS) que é aberto no navegador.
 
------
+---
+
+[![Texto Alternativo para a Imagem](https://img.youtube.com/vi/cKjmUhSn0js/hqdefault.jpg)](https://youtu.be/cKjmUhSn0js)
 
 ## 📌 Índice
 
