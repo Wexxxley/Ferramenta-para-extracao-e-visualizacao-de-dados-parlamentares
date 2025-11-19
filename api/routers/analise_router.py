@@ -2,14 +2,12 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Query, Depends
 from sqlmodel import Session, String, case, desc, func, select
 from api.tratamentoDados.database import get_session
-from api.log.logger_config import get_logger
 from api.models.deputado import Deputado
 from api.models.despesa import Despesa
 from api.models.partido import Partido
 from api.models.sessao_votacao import SessaoVotacao
 from api.models.voto_individual import VotoIndividual
 
-logger = get_logger("analises_logger", "log/analises.log")
 
 analise_router = APIRouter(prefix="/analise", tags=["Analises complementares"])
 
@@ -63,7 +61,6 @@ async def comparativo_gastos_estados(
         ]
 
     except Exception as e:
-        logger.error(f"Erro ao gerar comparativo: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail="Erro interno ao processar análise de gastos"
@@ -128,7 +125,6 @@ def get_ranking_alinhamento_partidario(
 
         return items_ordenados
     except Exception as e:
-        logger.error(f"Erro ao gerar ranking: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail="Erro interno ao processar ranking de alinhamento"

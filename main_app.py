@@ -17,7 +17,7 @@ class App:
         self.root = root
         self.root.title("Analisador Parlamentar")
         self.root.geometry("650x500")
-        self.root.configure(bg="#1e1e2f") # Cor base da janela
+        self.root.configure(bg="#1e1e2f")
 
         self.queue = queue.Queue()
         
@@ -28,8 +28,7 @@ class App:
 
     def setup_styles(self):
         """Chama a configuração de estilo externa e armazena cores extras."""
-        # A função configure_styles aplica os estilos ttk globalmente
-        # e retorna as cores que precisamos para widgets customizados.
+        # A função configure_styles aplica os estilos ttk globalmente e retorna as cores que precisamos para widgets customizados.
         self.widget_colors = configure_styles()
 
     def create_widgets(self):
@@ -91,7 +90,6 @@ class App:
                     self.progress_bar['value'] = data
                 elif message_type == 'done':
                     self.start_button.config(state="normal")
-                    self.log(">>> PROCESSO FINALIZADO <<<")
         finally:
             self.root.after(100, self.process_queue)
 
@@ -131,10 +129,8 @@ class App:
             if not success:
                 raise Exception("O processamento de dados falhou.")
 
-            self.queue.put(('log', "Procurando uma porta livre para a API..."))
             free_port = self.find_free_port()
 
-            self.queue.put(('log', "Iniciando servidor da API local..."))
             os.environ['DATABASE_YEAR'] = str(year)
 
             api_thread = threading.Thread(
@@ -142,16 +138,14 @@ class App:
                 daemon=True
             )
             api_thread.start()
-            time.sleep(5) 
+            time.sleep(3) 
 
-            self.queue.put(('log', f"API rodando em http://127.0.0.1:{free_port}"))
+            self.queue.put(('log', f"\n - API rodando em http://127.0.0.1:{free_port}"))
 
-            self.queue.put(('log', "Abrindo a interface de visualização..."))
-            html_file_path = os.path.join("frontend", "index.html")
+            swagger_url = f"http://127.0.0.1:{free_port}/docs"
+            self.queue.put(('log', f"\n - Documentação da API: {swagger_url}\n"))
             
-            # Passa a porta para o frontend através da URL
             webbrowser.open(f'http://127.0.0.1:{free_port}/?year={year}&port={free_port}')
-
 
         except Exception as e:
             self.queue.put(('log', f"ERRO CRÍTICO: {e}"))

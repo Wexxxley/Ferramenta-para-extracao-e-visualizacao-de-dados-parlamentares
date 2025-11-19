@@ -2,11 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from typing import List
 from api.tratamentoDados.database import get_session
-from api.log.logger_config import get_logger
 from api.models.voto_individual import VotoIndividual
 from api.models.votacao_proposicao import VotacaoProposicao
 
-logger = get_logger("votos_individuais_logger", "log/votos_individuais.log")
 voto_router = APIRouter(prefix="/voto_individual", tags=["Voto Individual"])
 
 # Obtém um voto individual pelo ID

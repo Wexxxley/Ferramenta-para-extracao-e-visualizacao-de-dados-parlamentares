@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy import desc
 from sqlmodel import Session, select, func
-from typing import List
 from typing import Optional
 
 from api.dtos.analise_dtos import PartidoRankingDespesa
@@ -17,7 +16,6 @@ from api.utils.querys import get_despesas_deputado_2024_subquery
 
 partido_router = APIRouter(prefix="/partido", tags=["Partido"])
 
-# router get id
 @partido_router.get("/get_by_id/{partido_id}", response_model=Partido)
 def get_partido_by_id(partido_id: int, session: Session = Depends(get_session)):
     """
@@ -33,7 +31,6 @@ def get_partido_by_id(partido_id: int, session: Session = Depends(get_session)):
     
     return partido
 
-#router get all
 @partido_router.get("/get_all", response_model=PaginatedResponse[Partido])
 def get_all_partidos(
     pagination: PaginationParams = Depends(),
@@ -71,7 +68,6 @@ def get_all_partidos(
         total_pages=math.ceil(total / pagination.per_page) if total > 0 else 0
     )
 
-#router filtro deputado por sigla
 @partido_router.get("/deputados_por_partido/{sigla_partido}", response_model=PaginatedResponse[Deputado])
 def get_deputados_de_um_partido(
     sigla_partido: str,

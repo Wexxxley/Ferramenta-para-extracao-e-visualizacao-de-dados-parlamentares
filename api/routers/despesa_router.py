@@ -4,11 +4,9 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlmodel import Session, func, select
 from api.tratamentoDados.database import get_session
-from api.log.logger_config import get_logger
 from api.models.despesa import Despesa
 from api.utils.pagination import PaginatedResponse, PaginationParams
 
-logger = get_logger("despesas_logger", "log/despesas.log")
 
 despesa_router = APIRouter(prefix="/despesa", tags=["Despesa"])
 
@@ -17,7 +15,6 @@ def get_despesa_by_id(despesa_id: int, session: Session = Depends(get_session)):
 
     despesa = session.get(Despesa, despesa_id)
     if not despesa:
-        logger.warning(f"Despesa com ID {despesa_id} não encontrada.")
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=f"Despesa com ID {despesa_id} não encontrada.")
     return despesa
 

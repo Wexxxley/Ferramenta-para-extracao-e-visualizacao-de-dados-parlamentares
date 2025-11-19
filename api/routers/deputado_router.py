@@ -6,15 +6,12 @@ from api.tratamentoDados.database import get_session
 from api.dtos.analise_dtos import DeputadoRankingDespesa, ResumoDeputado
 from api.dtos.deputado_dtos import DeputadoResponse
 from api.dtos.ranking_deputados_atuantes_dtos import DeputadoRankingDTO
-from api.log.logger_config import get_logger
 from api.models.deputado import Deputado
 from api.models.votacao_proposicao import VotacaoProposicao
 from api.models.voto_individual import VotoIndividual
 from api.utils.pagination import PaginatedResponse, PaginationParams
 
 from api.utils.querys import get_despesas_deputado_2024_subquery
-
-logger = get_logger("deputados_logger", "log/deputados.log")
 
 deputado_router = APIRouter(prefix="/deputado", tags=["Deputado"])
 
@@ -26,7 +23,6 @@ def get_by_id(deputado_id: int, ano: int = Query(None, description="Ano do datab
     deputado = session.exec(statement).first()
 
     if not deputado:
-        logger.warning(f"Deputado com ID {deputado_id} nao encontrado.")
         raise HTTPException(status_code=404, detail=f"Deputado com ID {deputado_id} nao encontrado.")
 
     deputado_response = DeputadoResponse.from_model(deputado)

@@ -1,11 +1,11 @@
 import time
 from sqlmodel import Session 
 from .database import create_db_and_tables, get_engine_for_year, create_session_with_retries
-from .despesaProcessor import download_and_unzip_local_despesas, fetch_and_save_despesas
+from .despesaProcessor import fetch_and_save_despesas
 from .partidoProcessor import fetch_and_save_partidos
 from .deputadosProcessor import fetch_and_save_deputados
 from .sessaoProposicaoProcessor import fetch_and_save_votacoes
-from .votoProcessor import buscar_votos_por_sessao, fetch_and_save_votos
+from .votoProcessor import fetch_and_save_votos
 
 def run_data_processing(year: int, progress_callback):
     # --- MEDIÇÃO DE TEMPO INÍCIO TOTAL ---
@@ -25,6 +25,7 @@ def run_data_processing(year: int, progress_callback):
 
     # --- 2. Configura o Banco de Dados e a SESSÃO DE REQUISIÇÕES ---
     try:
+        
         engine = get_engine_for_year(year)
         create_db_and_tables(engine)
         progress_callback('log', f"Banco de dados 'dbs/camara_{year}.db' está pronto.")
@@ -96,7 +97,3 @@ def mock_progress_callback(msg_type, data):
         print(f"[LOG] {data}")
     elif msg_type == 'progress':
         print(f"[PROGRESS] {data}%")
-
-if __name__ == '__main__':
-    ano_para_teste = 2012
-    run_data_processing(ano_para_teste, mock_progress_callback)

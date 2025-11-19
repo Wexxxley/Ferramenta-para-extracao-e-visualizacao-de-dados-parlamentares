@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, func
 from typing import Optional
 import math
-
 from api.models.sessao_votacao import SessaoVotacao
 from api.tratamentoDados.database import get_session
 from api.utils.pagination import PaginatedResponse, PaginationParams

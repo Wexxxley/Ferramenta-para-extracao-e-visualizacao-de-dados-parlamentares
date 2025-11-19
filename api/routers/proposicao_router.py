@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select, func
 from api.tratamentoDados.database import get_session
-from api.log.logger_config import get_logger
 from api.models.proposicao import Proposicao
 from api.models.sessao_votacao import SessaoVotacao
 from api.utils.pagination import PaginatedResponse, PaginationParams
@@ -10,7 +9,6 @@ from typing import Optional
 from api.dtos.proposicao_dtos import  ProposicaoMaisVotadaDTO
 from api.models.votacao_proposicao import VotacaoProposicao
 
-logger = get_logger("proposicoes_logger", "log/proposicoes.log")
 proposicao_router = APIRouter(prefix="/proposicao", tags=["Proposicao"])
 
 # Obtém uma proposição pelo ID
@@ -80,7 +78,6 @@ def get_sessoes_por_proposicao(
     
     return sessoes
 
-# Obtém as 10 proposições mais votadas
 @proposicao_router.get("/mais_votadas/{limite}", response_model=list[ProposicaoMaisVotadaDTO])
 def get_proposicoes_mais_votadas(limite: int, session: Session = Depends(get_session)):
     """

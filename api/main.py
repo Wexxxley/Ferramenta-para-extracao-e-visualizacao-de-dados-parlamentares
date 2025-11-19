@@ -30,11 +30,7 @@ app.include_router(proposicao_router)
 app.include_router(analise_router)
 
 
-# --- ADICIONE ESTE BLOCO DE CÓDIGO ---
-# 2. Define o caminho para a pasta 'frontend'
+# Define o caminho para a pasta 'frontend'
 frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
 
-# 3. "Monta" a pasta, tornando-a acessível via HTTP
-#    O path="" significa que o index.html será a página inicial do site
 app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
-# --- FIM DO BLOCO ---
