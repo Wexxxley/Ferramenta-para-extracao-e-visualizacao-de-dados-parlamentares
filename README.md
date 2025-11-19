@@ -51,9 +51,12 @@ O núcleo da ferramenta é o módulo de coleta de dados. O principal desafio enf
 
 ## 🏗️ Arquitetura e Estrutura de Dados
 
-O projeto é dividido em três partes principais: o painel (`Tkinter`), uma API de backend (`FastAPI`) e um dashboard (`HTML/JS`).
 
-### 1\. Schema do Banco de Dados
+### 1\. Arquitetura
+
+![alt text](imgs/arquitetura.png)
+
+### 2\. Schema do Banco de Dados
 
 Após o ETL, os dados são salvos em um banco de dados SQLite local. 
 
@@ -61,9 +64,10 @@ Após o ETL, os dados são salvos em um banco de dados SQLite local.
 >A escolha do SQLite é um gargalo para a escalabilidade, sendo ideal sua substituição por um Data Warehouse em implementações futuras 
 >que visem analisar maiores volumes de dados.
 
+
 ![alt text](imgs/schema.png)
 
-### 2\. Endpoints da API
+### 3\. Endpoints da API
 
 A API local (FastAPI) serve os dados do banco SQLite para o frontend.
 
